@@ -7,9 +7,17 @@ import authConfig from '../config/auth';
 
 import User from '../models/User';
 
+interface RequestAuth {
+  email: string;
+  password: string;
+}
+
 export default {
-  async create(request: Request, response: Response) {
-    const { email, password } = request.body;
+  async create(
+    request: Request,
+    response: Response,
+  ): Promise<Response<RequestAuth>> {
+    const { email, password }: RequestAuth = request.body;
 
     const userRepository = await getRepository(User);
 

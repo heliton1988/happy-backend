@@ -5,9 +5,22 @@ import * as Yup from 'yup';
 import orphanageView from '../views/orphanages_view';
 import Orphanage from '../models/Orphanage';
 
+interface OrphanageData {
+  name: string;
+  latitude: number;
+  longitude: number;
+  about: string;
+  instructions: string;
+  opening_hours: string;
+  open_on_weekends: boolean;
+}
+
 export default {
   // List every orphanages there're on database
-  async index(request: Request, response: Response) {
+  async index(
+    request: Request,
+    response: Response,
+  ): Promise<Response<Orphanage>> {
     const orphanagesRepository = getRepository(Orphanage);
 
     const orphanage = await orphanagesRepository.find({
@@ -18,7 +31,10 @@ export default {
   },
 
   // List just one orphanage
-  async show(request: Request, response: Response) {
+  async show(
+    request: Request,
+    response: Response,
+  ): Promise<Response<Orphanage>> {
     const { id } = request.params;
 
     const orphanagesRepository = getRepository(Orphanage);
@@ -37,7 +53,10 @@ export default {
   },
 
   // Create a orphanage on database
-  async create(request: Request, response: Response) {
+  async create(
+    request: Request,
+    response: Response,
+  ): Promise<Response<Orphanage>> {
     const {
       name,
       latitude,
@@ -46,7 +65,7 @@ export default {
       instructions,
       opening_hours,
       open_on_weekends,
-    } = request.body;
+    }: OrphanageData = request.body;
 
     const orphanagesRepository = getRepository(Orphanage);
 
@@ -63,7 +82,7 @@ export default {
       about,
       instructions,
       opening_hours,
-      open_on_weekends: open_on_weekends === 'true',
+      open_on_weekends,
       images,
     };
 

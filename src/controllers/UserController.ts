@@ -5,15 +5,15 @@ import * as Yup from 'yup';
 
 import User from '../models/User';
 
-interface RequestUser {
+interface RequestUserData {
   name: string;
   email: string;
   password: string;
 }
 
 export default {
-  async create(request: Request, response: Response) {
-    const { name, email, password }: RequestUser = request.body;
+  async create(request: Request, response: Response): Promise<Response<User>> {
+    const { name, email, password }: RequestUserData = request.body;
 
     const userRepository = getRepository(User);
 
@@ -22,7 +22,9 @@ export default {
     });
 
     if (checkUserExists) {
-      return response.status(400).json({ error: 'User already exists!' });
+      return response
+        .status(400)
+        .json({ error: 'Email address already used!' });
     }
 
     const passwordHashed = await hash(password, 8);
@@ -43,7 +45,7 @@ export default {
       abortEarly: false,
     });
 
-    const user = await userRepository.create(data);
+    const user = userRepository.create(data);
 
     await userRepository.save(user);
 
